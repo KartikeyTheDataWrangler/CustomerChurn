@@ -7,23 +7,56 @@ from sklearn.pipeline import Pipeline
 from src.CustomerChurn.logger import logging
 from src.CustomerChurn.exception import CustomException
 from src.CustomerChurn.utils import save_object
-from src.CustomerChurn.utils import Col_Dropper
-
 from sklearn.pipeline import Pipeline
- # Replace 'your_module' with the actual module where your custom transformer is defined
 
-# Create a pandas DataFrame (assuming 'df' is your DataFrame)
-df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
-print(df)
+@dataclass
+class DataTransformationConfig:
+    preprocessor_obj_filepath:str = os.path.join('artifacts','preprocessor.pkl')
+    
+class DataTransformation:
+    def __init__(self):
+        self.data_transformation_config = DataTransformationConfig()
+        
+    def transformer_obj(self):
+        
+        try:
+            target_cols = 'churn'
+            feature_cols = ['Age', 'Gender', 'Location', 'Subscription_Length_Months','Monthly_Bill',
+                            'Total_Usage_GB']
+            col_to_encode = ['Gender', 'Location']
+            logging.info('Pipeline Initiated')
+            
+            logging.info(f"target col : {target_cols}")
+            logging.info(f"feature cols: {feature_cols}")
+            logging.info(f"cols that are to be encoded: {col_to_encode}")
+            
+            
+            encoder = LabelEncoder()
+            mapping = dict(zip(encoder.classes_, 
+                               encoder.transform(encoder.classes_)))
+            logging.info("Created transformer")
+            return encoder, mapping
+            
+        except Exception as e:
+            raise CustomException(e,sys)
 
-# Create the pipeline with your custom transformer
-pipeline = Pipeline(
-    [
-        ('coldrop',Col_Dropper(coltodrop=['B']))
-    ]
-)
-
-# Fit and transform the DataFrame using the pipeline
-transformed_df = pipeline.fit_transform(df)
-
-print(transformed_df)
+    
+    def initiate_data_transformation(self, train_path, test_path):
+        
+        try:
+            train_df = pd.read_csv(train_path)
+            test_df = pd.read_csv(test_path)
+            
+            print(train_df)
+            logging.info("Reading train and test data completed")
+            
+            logging.info("Obtaining preprocessing object")
+            
+            preprocessing_obj = self.transformer_obj()
+            target_col_name = 'churn'
+            feature_col_name = ''
+            
+        except:
+            pass
+            
+        

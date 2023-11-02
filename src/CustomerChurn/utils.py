@@ -27,19 +27,6 @@ def load_object(file_path):
         raise CustomException(e, sys)
     
 
-class Col_Dropper(BaseEstimator, TransformerMixin):
-    def __init__(self, coltodrop):
-        self.coltodrop = coltodrop
-        
-    def fit(self,X,y=None):
-        Z = X.copy()
-        return Z 
-    
-    
-    def transform(self, X,y=None):
-        
-        Z = Z.drop(columns=self.coltodrop, axis=1)
-        return Z
-    
+
     
     
