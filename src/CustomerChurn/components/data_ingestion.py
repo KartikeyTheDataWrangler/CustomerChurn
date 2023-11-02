@@ -29,12 +29,15 @@ class DataIngestion:
         try: 
             df = pd.read_excel(f'notebook\customer_churn_large_dataset.xlsx')
             logging.info('Read the raw data')
+            df2 = df.drop(['CustomerID','Name'],axis=1)
+            print(df)
+            logging.info('Drop cols the raw data')
             
             os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path),exist_ok=True)
-            df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
+            df2.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
             logging.info("Train test split initiated")
             
-            train_set,test_set=train_test_split(df,test_size=0.3,random_state=12)
+            train_set,test_set=train_test_split(df2,test_size=0.3,random_state=12)
 
             train_set.to_csv(self.ingestion_config.train_data_path,index=False,header=True)
 

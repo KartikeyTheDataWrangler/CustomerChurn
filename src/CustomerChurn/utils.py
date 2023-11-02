@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import pickle
 from src.CustomerChurn.exception import CustomException
+from sklearn.base import BaseEstimator, TransformerMixin
+
 
 def save_object(file_path, obj):
     try:
@@ -23,3 +25,21 @@ def load_object(file_path):
 
     except Exception as e:
         raise CustomException(e, sys)
+    
+
+class Col_Dropper(BaseEstimator, TransformerMixin):
+    def __init__(self, coltodrop):
+        self.coltodrop = coltodrop
+        
+    def fit(self,X,y=None):
+        Z = X.copy()
+        return Z 
+    
+    
+    def transform(self, X,y=None):
+        
+        Z = Z.drop(columns=self.coltodrop, axis=1)
+        return Z
+    
+    
+    
