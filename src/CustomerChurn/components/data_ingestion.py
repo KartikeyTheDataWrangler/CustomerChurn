@@ -5,6 +5,7 @@ from src.CustomerChurn.exception import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+from src.CustomerChurn.components.data_transformation import DataTransformation
 
 
 
@@ -30,7 +31,7 @@ class DataIngestion:
             df = pd.read_excel(f'notebook\customer_churn_large_dataset.xlsx')
             logging.info('Read the raw data')
             df2 = df.drop(['CustomerID','Name'],axis=1)
-            print(df)
+            #print(df)
             logging.info('Drop cols the raw data')
             
             os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path),exist_ok=True)
@@ -57,5 +58,9 @@ class DataIngestion:
 if __name__=="__main__":
     obj=DataIngestion()
     train_data,test_data=obj.initiate_data_ingestion()
+    datatransformation = DataTransformation()
+    datatransformation.transformer_obj()
+    datatransformation.initiate_data_transformation(train_data, test_data)
+    
     
   
