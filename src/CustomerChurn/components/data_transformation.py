@@ -21,7 +21,7 @@ class DataTransformation:
     def transformer_obj(self):
         
         try:
-            target_cols = 'churn'
+            target_cols = 'Churn'
             feature_cols = ['Age', 'Gender', 'Location', 'Subscription_Length_Months','Monthly_Bill',
                             'Total_Usage_GB']
             col_to_encode = ['Gender', 'Location']
@@ -32,11 +32,6 @@ class DataTransformation:
             logging.info(f"target col : {target_cols}")
             logging.info(f"feature cols: {feature_cols}")
             logging.info(f"cols that are to be encoded: {col_to_encode}")
-            
-            
-            #encoder = LabelEncoder()
-            #mapping = dict(zip(encoder.classes_, 
-                               #encoder.transform(encoder.classes_)))
             
             
             encoder_pipeline = Pipeline(steps=[
@@ -61,15 +56,15 @@ class DataTransformation:
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
             
-            print(train_df)
-            print(test_df)
+            #print(train_df)
+            #print(test_df)
             logging.info("Reading train and test data completed")
             
             logging.info("Obtaining preprocessing object")
             logging.info("initiating transformer pipeline")
             
             preprocessing_obj = self.transformer_obj()
-            target_cols = 'churn'
+            target_cols = 'Churn'
             feature_cols = ['Age', 'Gender', 'Location', 'Subscription_Length_Months','Monthly_Bill',
                             'Total_Usage_GB']
             col_to_encode = ['Gender', 'Location']
@@ -86,8 +81,28 @@ class DataTransformation:
             for col, encoding in label_encoder_mapping.items():
                 logging.info(f"{col} : {encoding}")
             print(label_encoder_mapping)
-        except:
-            pass
+            
+            
+            train_df = pd.read_csv(train_path)
+            test_df = pd.read_csv(test_path)
+            input_features_train_df=train_df.drop(columns=[target_cols],axis=1)
+            target_feature_train_df=train_df[target_cols]
+            
+            input_feature_test_df=test_df.drop(columns=[target_cols],axis=1)
+            target_feature_test_df=test_df[target_cols]
+            print(input_features_train_df)
+            print(input_feature_test_df)
+            
+            
+            logging.info("Applying Preprocessing on training and test dataframe")
+
+            input_feature_train_arr=preprocessing_obj.fit_transform(input_features_train_df,None)
+            input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df, None)
+            print(input_feature_train_arr)
+        except Exception as e:
+            raise CustomException(e,sys)
+
+            
             
             
         
