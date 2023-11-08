@@ -35,8 +35,8 @@ class DataTransformation:
             ])
             
             preprocessor = ColumnTransformer([
-                ("encoderpipe", encoder_pipeline, col_to_encode)
-            ])
+                ("encoderpipe", encoder_pipeline, col_to_encode),
+            ], remainder='passthrough')
             
             logging.info("Created transformer")
             
@@ -89,7 +89,7 @@ class DataTransformation:
             
             logging.info("Applying Preprocessing on training and test dataframe")
             
-            input_feature_train_arr = preprocessing_obj.fit_transform(input_features_train_df)
+            input_feature_train_arr = preprocessing_obj.fit_transform(input_features_train_df )
             input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
             
             print(input_feature_train_arr)
