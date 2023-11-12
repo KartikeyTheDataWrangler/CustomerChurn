@@ -17,6 +17,8 @@ class DataTransformation:
     def __init__(self):
         self.data_transformation_config = DataTransformationConfig()
         
+        
+        
     def transformer_obj(self):
         
         try:
@@ -45,6 +47,8 @@ class DataTransformation:
         except Exception as e:
             raise CustomException(e, sys)
 
+
+
     
     def initiate_data_transformation(self, train_path, test_path):
         
@@ -61,21 +65,25 @@ class DataTransformation:
             target_cols = 'Churn'
             feature_cols = ['Age', 'Gender', 'Location', 'Subscription_Length_Months', 'Monthly_Bill', 'Total_Usage_GB']
             col_to_encode = ['Gender', 'Location']
+            
             '''
-            ordinal_encoder_mapping = {}
+            data = pd.DataFrame({'gender' : ['Female', 'Male','Female','Female','Male'], 
+                            'state':['Chicago', 'Houston', 'Los Angeles', 'Miami', 'New York']})
+            #print(data)
+            #generating mappings
             
             encoder = OrdinalEncoder()
-            encoded = encoder.fit_transform(train_df[col_to_encode])
-            categories = encoder.categories_ 
-            category_encoding = {category: encoded_value for category, encoded_value in zip(categories, encoded)}
+            encoder.fit_transform(data)
+          
+            for i, col in enumerate(encoder.categories_):
+                print(f"\n{data.columns[i]}:")
+                for j in col:
+                    print(f"  {j[0]} -> {j[1]}")
+                        
+            print(data)'''
             
-            print(category_encoding)
-            print(encoder.categories_)
             
-            logging.info("Label encoding classes generated:")
-            for col, encoding in ordinal_encoder_mapping.items():
-                logging.info(f"{col} : {encoding}")
-                '''
+            # using preprocessor    
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
             input_features_train_df = train_df.drop(columns=[target_cols], axis=1)
@@ -85,7 +93,7 @@ class DataTransformation:
             target_feature_test_df = test_df[target_cols]
             
             print(input_features_train_df)
-            print(input_feature_test_df)
+            #print(input_feature_test_df)
             
             logging.info("Applying Preprocessing on training and test dataframe")
             
@@ -94,5 +102,22 @@ class DataTransformation:
             
             print(input_feature_train_arr)
             
+            train_arr = np.c_[input_feature_train_arr, np.array(target_feature_train_df)]
+            test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
+            print(train_arr)
+            
+            logging.info(f"Saved preprocessing object")
+            preprocessor_obj_filepath = self.data_transformation_config.preprocessor_obj_filepath
+            save_object(
+
+                file_path=preprocessor_obj_filepath ,
+                obj=preprocessing_obj
+            )
+            
+            return (
+                train_arr,
+                test_arr,
+                self.data_transformation_config.preprocessor_obj_filepath
+            )
         except Exception as e:
             raise CustomException(e, sys)
